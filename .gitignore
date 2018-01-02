@@ -1,8 +1,9 @@
 # idea
-.idea/
+/.idea/
+/out/
 
 # gradle
-.gradle/
+/.gradle/
 *.gradle
 
 # other
