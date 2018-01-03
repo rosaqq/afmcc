@@ -5,5 +5,7 @@
 # gradle
 /.gradle/
 *.gradle
+/build/
 
 # other
+/src/test/
