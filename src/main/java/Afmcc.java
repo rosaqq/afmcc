@@ -13,6 +13,15 @@ public class Afmcc {
 
     private Afmcc() {
 
+        EventQueue.invokeLater(() -> {
+            try {
+                gui frame = new gui(this);
+                frame.setVisible(true);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+
         cstate = new Cstate(controllerIndex, bq);
 
         Thread cinput = new Thread(cstate, "cinput");
@@ -49,14 +58,5 @@ public class Afmcc {
 
     public static void main(String[] args) {
         Afmcc afmcc = new Afmcc();
-
-        EventQueue.invokeLater(() -> {
-            try {
-                gui frame = new gui(afmcc);
-                frame.setVisible(true);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
     }
 }
