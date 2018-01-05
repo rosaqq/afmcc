@@ -42,14 +42,20 @@ public class Afmcc {
                     switch (qobj.getFunction()){
                         case "sweep":
                             System.out.printf("sweep(%d, %d, %d)\n", qobj.getVar1(), qobj.getVar2(), qobj.getVar3());
+                            //culib.CU30WSweep(tbd,tbd,tbd,tbd,qobj.getVar1(),qobj.getVar2(),qobj.getVar3());
                             break;
                         case "stop":
                             System.out.println("stop call");
+                            //culib.CU30WStop(tbd,tbd,tbd,tbd);
                             break;
                         case "step":
                             System.out.printf("step(%d, %d, %d)\n", qobj.getVar1(), qobj.getVar2(), qobj.getVar3());
+                            //culib.CU30WStep(tbd,tbd,tbd,tbd,qobj.getVar1(), qobj.getVar2(),qobj.getVar2());
                             break;
                     }
+                } else {
+                    //processing trash do secknv goes below \/
+
                 }
 
                 repaintGui();
