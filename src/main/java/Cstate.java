@@ -31,18 +31,20 @@ public class Cstate implements Runnable{
             currState = controllers.getState(cindex);
 
             if(!currState.isConnected) {
-
+                /*
+                //queue test code
                 bq.add(new Qobj(i++));
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(5000);
                 }
                 catch(InterruptedException e) {
                     System.out.println("interrupted");
                 }
-                /*
+                */
+
                 System.out.println("controller not connected");
                 close();
-                */
+
 
             }else{
                 if(!currState.equals(lastState)) {
