@@ -19,6 +19,7 @@ public interface CU30Wrap extends StdCallLibrary {
                            String pCompany, String pDate, String pProductStr, String pCustomer, String pCustomerStr);
 
     void CU30WClose(int USBInstance, int USBVersion, int DevID, int EEID);
+
     void CU30WStop(int USBInstance, int USBVersion, int DevID, int EEID);
     void CU30WStep(int USBInstance, int USBVersion, int DevID, int EEID, int Axis, int n, int Vel);
     void CU30WSweep(int USBInstance, int USBVersion, int DevID, int EEID, int Vel, int Axis, int Timeout);

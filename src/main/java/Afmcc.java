@@ -1,14 +1,16 @@
 import com.sun.jna.ptr.IntByReference;
 import com.studiohartman.jamepad.ControllerState;
 import java.awt.*;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class Afmcc {
 
     private int controllerIndex = 0;
-    private BlockingQ<ControllerState> bq = new BlockingQ<ControllerState>();
+
+    private LinkedBlockingQueue<Qobj> bq;
     private CU30Wrap culib;
     Cstate cstate;
+
 
 
     private Afmcc() {
@@ -22,6 +24,7 @@ public class Afmcc {
             }
         });
 
+        bq = new LinkedBlockingQueue<>();
         cstate = new Cstate(controllerIndex, bq);
 
         Thread cinput = new Thread(cstate, "cinput");
@@ -33,8 +36,8 @@ public class Afmcc {
 
         while(true){
             try {
-                ControllerState cs = bq.poll();
-                repaintGui(cs);
+                Qobj qobj = bq.take();
+                System.out.println(qobj);
             } catch (InterruptedException e) {
                 System.out.println("interrupted " + e);
             }
@@ -51,12 +54,13 @@ public class Afmcc {
 
         String ret = culib.CU30WOpen(new IntByReference(1), new IntByReference(1), new IntByReference(1), new IntByReference(1));
         System.out.println(ret);
+        culib.CU30WClose(0,0,0,0);
         culib.CU30WrapperDispose();
         cstate.close();
     }
 
 
     public static void main(String[] args) {
-        Afmcc afmcc = new Afmcc();
+        new Afmcc();
     }
 }
