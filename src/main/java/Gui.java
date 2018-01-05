@@ -116,8 +116,8 @@ public class Gui extends JFrame {
                 if(e.getValueIsAdjusting() || (!e.getValueIsAdjusting() && xScrollBar.getValue()==0) ) {
                     System.out.println("X adjustment - " + xScrollBar.getValue());
                     xLabel.setText(String.valueOf(xScrollBar.getValue()));
-                    //procar func em c
-
+                    if(xScrollBar.getValue()!=0) afmcc.bq.add(new Qobj("sweep",xScrollBar.getValue(),1, 0));
+                    else afmcc.bq.add(new Qobj("stop"));
                 } else{
                     System.out.println("aint adjusting so  won't move!");
                     xLabel.setText(String.valueOf(xScrollBar.getValue()));
@@ -214,7 +214,8 @@ public class Gui extends JFrame {
                 if(e.getValueIsAdjusting() || (!e.getValueIsAdjusting() && yScrollBar.getValue()==0) ) {
                     System.out.println("Y adjustment - " + yScrollBar.getValue());
                     yLabel.setText(String.valueOf(yScrollBar.getValue()));
-                    //procar func em c
+                    if(yScrollBar.getValue()!=0) afmcc.bq.add(new Qobj("sweep",yScrollBar.getValue(),2, 0));
+                    else afmcc.bq.add(new Qobj("stop"));
 
                 } else{
                     System.out.println("aint adjusting so won't move!");
@@ -314,8 +315,8 @@ public class Gui extends JFrame {
                 if(e.getValueIsAdjusting() || (!e.getValueIsAdjusting() && zScrollBar.getValue()==0) ) {
                     System.out.println("Z adjustment - " + zScrollBar.getValue());
                     zLabel.setText(String.valueOf(zScrollBar.getValue()));
-                    //procar func em c
-
+                    if(zScrollBar.getValue()!=0) afmcc.bq.add(new Qobj("sweep",zScrollBar.getValue(),3, 0));
+                    else afmcc.bq.add(new Qobj("stop"));
                 } else{
                     System.out.println("aint adjusting so won't move!");
                     zLabel.setText(String.valueOf(zScrollBar.getValue()));
