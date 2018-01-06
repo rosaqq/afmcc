@@ -79,8 +79,8 @@ public class Gui extends JFrame {
         pX.setHorizontalAlignment(SwingConstants.RIGHT);
 
         xSteps = new JTextField();
-        xSteps.setToolTipText("steps");
-        xSteps.setText("1000");
+        xSteps.setToolTipText("Steps");
+        xSteps.setText("1");
         xSteps.setMinimumSize(new Dimension(40, 20));
         xSteps.setMaximumSize(new Dimension(40, 20));
         xSteps.setHorizontalAlignment(SwingConstants.CENTER);
@@ -88,8 +88,8 @@ public class Gui extends JFrame {
         xSteps.setBorder(new LineBorder(new Color(0, 0, 0)));
 
         xVel = new JTextField();
-        xVel.setToolTipText("velocity");
-        xVel.setText("1000");
+        xVel.setToolTipText("Velocity");
+        xVel.setText("1");
         xVel.setMinimumSize(new Dimension(40, 20));
         xVel.setMaximumSize(new Dimension(40, 20));
         xVel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -176,8 +176,8 @@ public class Gui extends JFrame {
         pY.setHorizontalAlignment(SwingConstants.RIGHT);
 
         yVel = new JTextField();
-        yVel.setToolTipText("velocity");
-        yVel.setText("1000");
+        yVel.setToolTipText("Velocity");
+        yVel.setText("1");
         yVel.setMinimumSize(new Dimension(40, 20));
         yVel.setMaximumSize(new Dimension(40, 20));
         yVel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -185,8 +185,8 @@ public class Gui extends JFrame {
         yVel.setBorder(new LineBorder(new Color(0, 0, 0)));
 
         ySteps = new JTextField();
-        ySteps.setToolTipText("steps");
-        ySteps.setText("0");
+        ySteps.setToolTipText("Steps");
+        ySteps.setText("1");
         ySteps.setMinimumSize(new Dimension(40, 20));
         ySteps.setMaximumSize(new Dimension(40, 20));
         ySteps.setHorizontalAlignment(SwingConstants.CENTER);
@@ -279,7 +279,7 @@ public class Gui extends JFrame {
         zVel.setSize(new Dimension(60, 0));
         zVel.setPreferredSize(new Dimension(60, 20));
         zVel.setToolTipText("Velocity");
-        zVel.setText("1000");
+        zVel.setText("1");
         zVel.setMinimumSize(new Dimension(60, 20));
         zVel.setMaximumSize(new Dimension(60, 20));
         zVel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -288,7 +288,7 @@ public class Gui extends JFrame {
 
         zSteps = new JTextField();
         zSteps.setToolTipText("Steps");
-        zSteps.setText("1000");
+        zSteps.setText("1");
         zSteps.setMinimumSize(new Dimension(40, 20));
         zSteps.setMaximumSize(new Dimension(40, 20));
         zSteps.setHorizontalAlignment(SwingConstants.CENTER);
@@ -324,7 +324,7 @@ public class Gui extends JFrame {
             }
         });
 
-        JButton zButton1 = new JButton("<");
+        JButton zButton1 = new JButton(">");
         zButton1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -334,7 +334,7 @@ public class Gui extends JFrame {
                     int zV = Integer.parseInt(zVel.getText());
                     if( zV>0 && zS>0 && zV<=1000 && zS<=1000000) {
                         System.out.println("vel : " + zV +" steps : " + zS);
-                        afmcc.bq.add(new Qobj("step",3, Integer.parseInt(zSteps.getText()),-1*Integer.parseInt(zVel.getText())));
+                        afmcc.bq.add(new Qobj("step",3, Integer.parseInt(zSteps.getText()),Integer.parseInt(zVel.getText())));
                     }else System.out.println("invalid args!");
                 } catch (NumberFormatException exc) {
                     // not an integer/s
@@ -343,7 +343,7 @@ public class Gui extends JFrame {
             }
         });
 
-        JButton zButton2 = new JButton(">");
+        JButton zButton2 = new JButton("<");
         zButton2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -352,7 +352,7 @@ public class Gui extends JFrame {
                     int zV = Integer.parseInt(zVel.getText());
                     if( zV>0 && zS>0 && zV<=1000 && zS<=1000000) {
                         System.out.println("vel : " + zV +" steps : " + zS);
-                        afmcc.bq.add(new Qobj("step",3,Integer.parseInt(zSteps.getText()),Integer.parseInt(zVel.getText())));
+                        afmcc.bq.add(new Qobj("step",3,Integer.parseInt(zSteps.getText()),-1*Integer.parseInt(zVel.getText())));
                     }else System.out.println("invalid args!");
                 } catch (NumberFormatException exc) {
                     // not an integer/s
@@ -377,13 +377,13 @@ public class Gui extends JFrame {
                                         .addComponent(zScrollBar, GroupLayout.PREFERRED_SIZE, 374, GroupLayout.PREFERRED_SIZE)
                                         .addGroup(gl_contentPane.createSequentialGroup()
                                                 .addGap(75)
-                                                .addComponent(zButton1, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(zButton2, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)
                                                 .addGap(5)
                                                 .addComponent(zVel, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
                                                 .addGap(5)
                                                 .addComponent(zSteps, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
                                                 .addGap(5)
-                                                .addComponent(zButton2, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))
+                                                .addComponent(zButton1, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))
                                         .addGroup(gl_contentPane.createSequentialGroup()
                                                 .addComponent(nY, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
                                                 .addGap(105)
@@ -415,7 +415,7 @@ public class Gui extends JFrame {
                                                 .addGap(5)
                                                 .addComponent(xSteps, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
                                                 .addGap(5)
-                                                .addComponent(zButton1, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)))
+                                                .addComponent(xButton1, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)))
                                 .addGap(117))
         );
         gl_contentPane.setVerticalGroup(
@@ -437,7 +437,7 @@ public class Gui extends JFrame {
                                         .addGroup(gl_contentPane.createSequentialGroup()
                                                 .addPreferredGap(ComponentPlacement.RELATED)
                                                 .addComponent(xSteps, GroupLayout.PREFERRED_SIZE, 16, GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(zButton1, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(xButton1, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE))
                                 .addGap(20)
                                 .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
                                         .addComponent(nY)
@@ -464,14 +464,14 @@ public class Gui extends JFrame {
                                 .addComponent(zScrollBar, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
                                 .addGap(5)
                                 .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-                                        .addComponent(zButton1, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(zButton2, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
                                         .addGroup(gl_contentPane.createSequentialGroup()
                                                 .addPreferredGap(ComponentPlacement.RELATED)
                                                 .addComponent(zVel, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE))
                                         .addGroup(gl_contentPane.createSequentialGroup()
                                                 .addPreferredGap(ComponentPlacement.RELATED)
                                                 .addComponent(zSteps, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(zButton2, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(zButton1, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE))
                                 .addGap(282))
         );
         contentPane.setLayout(gl_contentPane);
