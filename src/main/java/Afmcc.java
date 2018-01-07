@@ -5,8 +5,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class Afmcc {
 
-    private int controllerIndex = 0;
+
     public LinkedBlockingQueue<Qobj> bq;
+    public volatile int[] stepVel =  new int[3];
+    public volatile int[] steps =  new int[3];
+
+    private int controllerIndex = 0;
     private CU30Wrap culib;
     Cstate cstate;
 
@@ -37,34 +41,27 @@ public class Afmcc {
         //todo: rework to support multiple hardware interfaces
 
         Cu30 cu30 = new Cu30(culib, 0,0,0,0);
+        System.out.println("[MAIN][CU30] - " + cu30.open());
 
         while(true){
             try {
                 Qobj qobj = bq.take();
 
-                if(qobj.fromGui) {
-                    switch (qobj.getFunction()){
-                        case "sweep":
-                            System.out.printf("sweep(%d, %d, %d)\n", qobj.getVar1(), qobj.getVar2(), qobj.getVar3());
-                            //cu30.sweep(args);
-                            break;
-                        case "stop":
-                            System.out.println("stop call");
-                            //cu30.stop();
-                            break;
-                        case "step":
-                            System.out.printf("step(%d, %d, %d)\n", qobj.getVar1(), qobj.getVar2(), qobj.getVar3());
-                            //cu30.step(args);
-                            break;
-                    }
-                } else {
-                    //processing trash do secknv goes below \/
-
+                switch(qobj.trigger) {
+                    case "L1":
+                        cu30.stop();
+                        break;
+                    case "hat":
+                        dohat(cu30, qobj);
+                        break;
+                    case "axis":
+                        doax(cu30, qobj);
+                        break;
                 }
 
                 repaintGui();
             } catch (InterruptedException e) {
-                System.out.println("interrupted " + e);
+                System.out.println("[MAIN] loop interrupted: " + e);
             }
         }
 
@@ -74,15 +71,20 @@ public class Afmcc {
         //whatever needs to be changed in the Gui goes here, not sure if needed {standby}
     }
 
-    private void guiReaction() {
-        //acabei de inventar isto pa servir de placeholder para as cenas que devem ser chamadas pelos eventos do Gui
-        String ret = culib.CU30WOpen(new IntByReference(1), new IntByReference(1), new IntByReference(1), new IntByReference(1));
-        System.out.println(ret);
-        culib.CU30WClose(0,0,0,0);
-        culib.CU30WrapperDispose();
-        cstate.close();
+    private void dohat(Cu30 cu30, Qobj qobj) {
+        int axis = (qobj.htop||qobj.hbot)?1:((qobj.hleft||qobj.hright)?2:3);
+        cu30.step(axis, stepVel[axis-1], steps[axis-1]);
+        System.out.printf("[MAIN] stepping from %s %d steps at %d vel\n", qobj.fromGui?"GUI":"GPAD", steps[axis-1], stepVel[axis-1]);
     }
 
+    private void doax(Cu30 cu30, Qobj qobj) {
+        int x = Math.abs(qobj.axvel[0]);
+        int y = Math.abs(qobj.axvel[1]);
+        int z = Math.abs(qobj.axvel[2]);
+        int axis = x>y ? (x>z ? 1 : 3) : (y>z ? 2 : 3);
+        cu30.sweep(axis, qobj.axvel[axis-1], 0);
+        System.out.printf("[MAIN] %s sweeping from %s at %d vel\n", axis==1?"X":(axis==2?"Y":"Z"), qobj.fromGui?"GUI":"GPAD", qobj.axvel[axis-1]);
+    }
 
     public static void main(String[] args) {
         new Afmcc();

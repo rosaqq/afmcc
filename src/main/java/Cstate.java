@@ -10,12 +10,15 @@ public class Cstate implements Runnable{
     private ControllerManager controllers;
     private LinkedBlockingQueue<Qobj> bq;
     private int cindex;
+    private float thold;
+    private boolean axreset = false;
 
-    public Cstate(int x, LinkedBlockingQueue<Qobj> bq) {
-        this.bq = bq;
+    public Cstate(int x, LinkedBlockingQueue<Qobj> queue) {
+        bq = queue;
+        cindex = x;
+        thold = 0.08f;
         controllers = new ControllerManager();
         controllers.initSDLGamepad();
-        cindex = x;
     }
 
 
@@ -24,30 +27,20 @@ public class Cstate implements Runnable{
 
         ControllerState currState = controllers.getState(cindex);
         ControllerState lastState;
-        int i =0;
+
         while(inloop){
 
             lastState = currState;
             currState = controllers.getState(cindex);
 
             if(!currState.isConnected) {
-                /*
-                //queue test code
-                bq.add(new Qobj(i++));
-                try {
-                    Thread.sleep(5000);
-                }
-                catch(InterruptedException e) {
-                    System.out.println("interrupted");
-                }
-                */
 
-                System.out.println("controller not connected");
+                System.out.println("[GPAD] controller not connected");
                 close();
 
 
             }else{
-                if(!currState.equals(lastState)) {
+                if(isSignificant(currState, lastState)) {
                     bq.add(new Qobj(currState));
                 }
             }
@@ -61,10 +54,25 @@ public class Cstate implements Runnable{
         if(inloop) {
             inloop = false;
             controllers.quitSDLGamepad();
-            System.out.println("close drivers");
+            System.out.println("[GPAD] close gamepad drivers");
         }
         else {
-            System.out.println("already closed");
+            System.out.println("[GPAD] gamepad already closed");
         }
+    }
+
+    private boolean isSignificant(ControllerState state, ControllerState lastState) {
+        if(state.equals(lastState)) return false;
+
+        boolean ret = true;
+        if(Math.abs(state.leftStickX)<thold && Math.abs(state.leftStickY)<thold && Math.abs(state.rightStickY)<thold) {
+            ret = axreset;
+            axreset = false;
+        }
+        else {
+            axreset = true;
+        }
+
+        return ret;
     }
 }

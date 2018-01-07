@@ -4,25 +4,25 @@ public class Qobj {
 
     public boolean fromGui;
 
-    public float lx, ly, ry;
     public boolean htop, hbot, hleft, hright, hx, htri, L1;
+    public String trigger;
 
-    public int i;
+    //ax velocity can come from both gui and controller
+    //but steps and step velocity can only come from gui so they are fields in the main class
+    public int[] axvel = new int[3];
 
-    private String function;
-    private int var1,var2,var3;
-
+    //constructor for gamepad
     public Qobj(ControllerState cs) {
 
-        //constructor for gamepad
         fromGui = false;
 
-        // x sweep
-        lx = cs.leftStickX;
-        // y sweep
-        ly = cs.leftStickY;
-        // z sweep
-        ry = cs.rightStickY;
+        //no need for raw axis values so only pass normalized ones
+        //sweep vel x
+        axvel[0] = normalizeVel(cs.leftStickX*1000);
+        //sweep vel y
+        axvel[1] = normalizeVel(cs.leftStickY*1000);
+        //sweep vel z
+        axvel[2] = normalizeVel(cs.rightStickY*1000);
 
         // x step
         htop = cs.dpadUpJustPressed;
@@ -36,42 +36,55 @@ public class Qobj {
 
         // L1 stop
         L1 = cs.lbJustPressed;
+
+        //what triggered this qobj
+        trigger = (L1? "L1":((htop||hbot||hleft||hright||hx||htri)?"hat":"axis"));
+
     }
 
 
 
-
-    public Qobj(String func, int v1, int v2, int v3) {
+    //main constructor for gui
+    public Qobj(int x, int y, int z, boolean bx1, boolean bx2, boolean by1, boolean by2, boolean bz1, boolean bz2, boolean stop) {
 
         fromGui = true;
 
-        function=func;
-        var1 = v1;
-        var2 = v2;
-        var3 = v3;
+        //values already normalized from gui
+        //sweep vel x
+        axvel[0] = x;
+        //sweep vel y
+        axvel[1] = y;
+        //sweep vel z
+        axvel[2] = z;
+
+        // x step
+        htop = bx1;
+        hbot = bx2;
+        // y step
+        hleft = by1;
+        hright = by2;
+        // z step
+        hx = bz1;
+        htri = bz2;
+
+        // L1 stop
+        L1 = stop;
+
+        //what triggered this qobj
+        trigger = (L1? "L1":((htop||hbot||hleft||hright||hx||htri)?"hat":"axis"));
+
     }
 
-    public Qobj(String func) {
-        this(func, 0, 0, 0);
-    }
 
-    public String getFunction() {
-        return function;
-    }
-
-    public int getVar1() {
-        return var1;
-    }
-
-    public int getVar2() {
-        return var2;
-    }
-    public int getVar3() {
-        return var3;
+    private int normalizeVel(float vel) {
+        int value = Math.round(vel);
+        if(value>1000) return 1000;
+        if(value<-1000) return -1000;
+        return value;
     }
 
     @Override
     public String toString() {
-        return "Recieved queue object from " + (fromGui? "GUI" : "Controller");
+        return "[QOBJ] Recieved queue object from " + (fromGui? "GUI" : "GPAD");
     }
 }

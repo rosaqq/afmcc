@@ -19,25 +19,19 @@ public class Gui extends JFrame {
 
     private Afmcc afmcc;
     private JPanel contentPane;
-    JLabel xLabel;
-    JLabel yLabel;
-    JLabel zLabel;
-    private JTextField xSteps;
-    private JTextField xVel;
-    private JTextField yVel;
-    private JTextField ySteps;
-    private JTextField zVel;
-    private JTextField zSteps;
+    private JLabel xLabel, yLabel, zLabel;
+    private JTextField xSteps, ySteps, zSteps;
+    private JTextField xVel, yVel, zVel;
 
-    public static void main(String[] args) {
-    }
+    //todo: make tooltip of vel and step fields permanently visible
+    //todo: have a set vel and steps event triggered by a value update on their JTextField so gamepad can use these values
 
     /**
      * Create the frame.
      */
-    public Gui(Afmcc afmcc ) {
+    public Gui(Afmcc arg) {
 
-        this.afmcc=afmcc;
+        afmcc=arg;
 
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowListener() {
@@ -114,12 +108,12 @@ public class Gui extends JFrame {
         xScrollBar.addAdjustmentListener(new AdjustmentListener() {
             public void adjustmentValueChanged(AdjustmentEvent e) {
                 if(e.getValueIsAdjusting() || (!e.getValueIsAdjusting() && xScrollBar.getValue()==0) ) {
-                    System.out.println("X adjustment - " + xScrollBar.getValue());
+                    System.out.println("[GUI] X: " + xScrollBar.getValue());
                     xLabel.setText(String.valueOf(xScrollBar.getValue()));
-                    if(xScrollBar.getValue()!=0) afmcc.bq.add(new Qobj("sweep",xScrollBar.getValue(),1, 0));
-                    else afmcc.bq.add(new Qobj("stop"));
+                    if(xScrollBar.getValue()!=0) afmcc.bq.add(new Qobj(xScrollBar.getValue(), 0, 0, false, false, false, false, false, false, false));
+                    else afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, false, true));
                 } else{
-                    System.out.println("aint adjusting so  won't move!");
+                    System.out.println("[GUI] X bar stop");
                     xLabel.setText(String.valueOf(xScrollBar.getValue()));
                 }
 
@@ -134,12 +128,14 @@ public class Gui extends JFrame {
                     int xS = Integer.parseInt(xSteps.getText());
                     int xV = Integer.parseInt(xVel.getText());
                     if(xV>0 && xS>0 && xV<=1000 && xS<=1000000) {
-                        System.out.println("vel : " + xV +" steps : " + xS);
-                        afmcc.bq.add(new Qobj("step",1,Integer.parseInt(xSteps.getText()),Integer.parseInt(xVel.getText())));
-                    }else System.out.println("invalid args!");
+                        System.out.println("[GUI] +xVel: " + xV +", +xSteps: " + xS);
+                        afmcc.steps[0] = xS;
+                        afmcc.stepVel[0] = xV;
+                        afmcc.bq.add(new Qobj(0, 0, 0, false, true, false, false, false, false, false));
+                    }else System.out.println("[GUI] +x invalid args!");
                 } catch (NumberFormatException exc) {
                     // not an integer/s
-                    System.out.println("invalid args!");
+                    System.out.println("[GUI] +x invalid args!");
                 }
             }
         });
@@ -152,12 +148,14 @@ public class Gui extends JFrame {
                     int xS = Integer.parseInt(xSteps.getText());
                     int xV = Integer.parseInt(xVel.getText());
                     if( xV>0 && xS>0 && xV<=1000 && xS<=1000000) {
-                        System.out.println("vel : " + xV +" steps : " + xS);
-                        afmcc.bq.add(new Qobj("step",1,Integer.parseInt(xSteps.getText()),-1*Integer.parseInt(xVel.getText())));
-                    }else System.out.println("invalid args!");
+                        System.out.println("[GUI] -xVel: " + xV +" -xSteps: " + xS);
+                        afmcc.steps[0] = xS;
+                        afmcc.stepVel[0] = xV;
+                        afmcc.bq.add(new Qobj(0, 0, 0, true, false, false, false, false, false, false));
+                    }else System.out.println("[GUI] -x invalid args!");
                 } catch (NumberFormatException exc) {
                     // not an integer/s
-                    System.out.println("invalid args!");
+                    System.out.println("[GUI] -x invalid args!");
                 }
             }
         });
@@ -212,13 +210,13 @@ public class Gui extends JFrame {
             public void adjustmentValueChanged(AdjustmentEvent e) {
 
                 if(e.getValueIsAdjusting() || (!e.getValueIsAdjusting() && yScrollBar.getValue()==0) ) {
-                    System.out.println("Y adjustment - " + yScrollBar.getValue());
+                    System.out.println("[GUI] Y: " + yScrollBar.getValue());
                     yLabel.setText(String.valueOf(yScrollBar.getValue()));
-                    if(yScrollBar.getValue()!=0) afmcc.bq.add(new Qobj("sweep",yScrollBar.getValue(),2, 0));
-                    else afmcc.bq.add(new Qobj("stop"));
+                    if(yScrollBar.getValue()!=0) afmcc.bq.add(new Qobj(0, yScrollBar.getValue(), 0, false, false, false, false, false, false, false));
+                    else afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, false, true));
 
                 } else{
-                    System.out.println("aint adjusting so won't move!");
+                    System.out.println("[GUI] Y bar stop");
                     yLabel.setText(String.valueOf(yScrollBar.getValue()));
                 }
 
@@ -233,12 +231,14 @@ public class Gui extends JFrame {
                     int yS = Integer.parseInt(ySteps.getText());
                     int yV = Integer.parseInt(yVel.getText());
                     if( yV>0 && yS>0 && yV<=1000 && yS<=1000000) {
-                        System.out.println("vel : " + yV +" steps : " + yS);
-                        afmcc.bq.add(new Qobj("step",2,Integer.parseInt(ySteps.getText()),Integer.parseInt(yVel.getText())));
-                    }else System.out.println("invalid args!");
+                        System.out.println("[GUI] +yVel: " + yV +", +ySteps: " + yS);
+                        afmcc.steps[1] = yS;
+                        afmcc.stepVel[1] = yV;
+                        afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, true, false, false, false));
+                    }else System.out.println("[GUI] +y invalid args!");
                 } catch (NumberFormatException exc) {
                     // not an integer/s
-                    System.out.println("invalid args!");
+                    System.out.println("[GUI] +y invalid args!");
                 }
 
             }
@@ -252,12 +252,14 @@ public class Gui extends JFrame {
                     int yS = Integer.parseInt(ySteps.getText());
                     int yV = Integer.parseInt(yVel.getText());
                     if( yV>0 && yS>0 && yV<=1000 && yS<=1000000) {
-                        System.out.println("vel : " + yV +" steps : " + yS);
-                        afmcc.bq.add(new Qobj("step",2,Integer.parseInt(ySteps.getText()),-1*Integer.parseInt(yVel.getText())));
-                    }else System.out.println("invalid args!");
+                        System.out.println("[GUI] -yVel: " + yV +", -ySteps: " + yS);
+                        afmcc.steps[1] = yS;
+                        afmcc.stepVel[1] = yV;
+                        afmcc.bq.add(new Qobj(0, 0, 0, false, false, true, false, false, false, false));
+                    }else System.out.println("[GUI] -y invalid args!");
                 } catch (NumberFormatException exc) {
                     // not an integer/s
-                    System.out.println("invalid args!");
+                    System.out.println("[GUI] -y invalid args!");
                 }
             }
         });
@@ -313,12 +315,12 @@ public class Gui extends JFrame {
         zScrollBar.addAdjustmentListener(new AdjustmentListener() {
             public void adjustmentValueChanged(AdjustmentEvent e) {
                 if(e.getValueIsAdjusting() || (!e.getValueIsAdjusting() && zScrollBar.getValue()==0) ) {
-                    System.out.println("Z adjustment - " + zScrollBar.getValue());
+                    System.out.println("[GUI] Z: " + zScrollBar.getValue());
                     zLabel.setText(String.valueOf(zScrollBar.getValue()));
-                    if(zScrollBar.getValue()!=0) afmcc.bq.add(new Qobj("sweep",zScrollBar.getValue(),3, 0));
-                    else afmcc.bq.add(new Qobj("stop"));
+                    if(zScrollBar.getValue()!=0) afmcc.bq.add(new Qobj(0, 0, zScrollBar.getValue(), false, false, false, false, false, false, false));
+                    else afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, false, true));
                 } else{
-                    System.out.println("aint adjusting so won't move!");
+                    System.out.println("[GUI] Z bar stop");
                     zLabel.setText(String.valueOf(zScrollBar.getValue()));
                 }
             }
@@ -333,12 +335,14 @@ public class Gui extends JFrame {
                     int zS = Integer.parseInt(zSteps.getText());
                     int zV = Integer.parseInt(zVel.getText());
                     if( zV>0 && zS>0 && zV<=1000 && zS<=1000000) {
-                        System.out.println("vel : " + zV +" steps : " + zS);
-                        afmcc.bq.add(new Qobj("step",3, Integer.parseInt(zSteps.getText()),Integer.parseInt(zVel.getText())));
-                    }else System.out.println("invalid args!");
+                        System.out.println("[GUI] +zVel: " + zV +", +zSteps: " + zS);
+                        afmcc.steps[2] = zS;
+                        afmcc.stepVel[2] = zV;
+                        afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, true, false));
+                    }else System.out.println("[GUI] +z invalid args!");
                 } catch (NumberFormatException exc) {
                     // not an integer/s
-                    System.out.println("invalid args!");
+                    System.out.println("[GUI] +z invalid args!");
                 }
             }
         });
@@ -351,12 +355,14 @@ public class Gui extends JFrame {
                     int zS = Integer.parseInt(zSteps.getText());
                     int zV = Integer.parseInt(zVel.getText());
                     if( zV>0 && zS>0 && zV<=1000 && zS<=1000000) {
-                        System.out.println("vel : " + zV +" steps : " + zS);
-                        afmcc.bq.add(new Qobj("step",3,Integer.parseInt(zSteps.getText()),-1*Integer.parseInt(zVel.getText())));
-                    }else System.out.println("invalid args!");
+                        System.out.println("[GUI] -zVel: " + zV +", -zSteps: " + zS);
+                        afmcc.steps[2] = zS;
+                        afmcc.stepVel[2] = zV;
+                        afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, true, false, false));
+                    }else System.out.println("[GUI] -z invalid args!");
                 } catch (NumberFormatException exc) {
                     // not an integer/s
-                    System.out.println("invalid args!");
+                    System.out.println("[GUI] -z invalid args!");
                 }
             }
         });
