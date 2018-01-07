@@ -15,8 +15,6 @@ public class Afmcc {
     Cstate cstate;
 
 
-
-
     private Afmcc() {
 
         EventQueue.invokeLater(() -> {
