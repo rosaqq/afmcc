@@ -1,5 +1,5 @@
 # afmcc
-###[WIP]  
+### [WIP]
 Java controller program for the mech0nics CU30 hardware.  
 Has a GUI and supports Gamepads!  
 
