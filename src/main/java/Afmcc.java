@@ -12,6 +12,7 @@ public class Afmcc {
 
 
 
+
     private Afmcc() {
 
         EventQueue.invokeLater(() -> {
@@ -33,24 +34,27 @@ public class Afmcc {
         culib = CU30Wrap.SYNC_INSTANCE;
         culib.CU30WrapperInit();
 
+        //todo: rework to support multiple hardware interfaces
+
+        Cu30 cu30 = new Cu30(culib, 0,0,0,0);
+
         while(true){
             try {
                 Qobj qobj = bq.take();
-                System.out.println(qobj);
 
                 if(qobj.fromGui) {
                     switch (qobj.getFunction()){
                         case "sweep":
                             System.out.printf("sweep(%d, %d, %d)\n", qobj.getVar1(), qobj.getVar2(), qobj.getVar3());
-                            //culib.CU30WSweep(tbd,tbd,tbd,tbd,qobj.getVar1(),qobj.getVar2(),qobj.getVar3());
+                            //cu30.sweep(args);
                             break;
                         case "stop":
                             System.out.println("stop call");
-                            //culib.CU30WStop(tbd,tbd,tbd,tbd);
+                            //cu30.stop();
                             break;
                         case "step":
                             System.out.printf("step(%d, %d, %d)\n", qobj.getVar1(), qobj.getVar2(), qobj.getVar3());
-                            //culib.CU30WStep(tbd,tbd,tbd,tbd,qobj.getVar1(), qobj.getVar2(),qobj.getVar2());
+                            //cu30.step(args);
                             break;
                     }
                 } else {

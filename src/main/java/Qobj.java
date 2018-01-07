@@ -39,12 +39,7 @@ public class Qobj {
     }
 
 
-    public Qobj(int i) {
 
-        // test constructor for controller
-        fromGui = false;
-        this.i = i;
-    }
 
     public Qobj(String func, int v1, int v2, int v3) {
 
@@ -56,8 +51,8 @@ public class Qobj {
         var3 = v3;
     }
 
-    public Qobj(String func){
-        function = func;
+    public Qobj(String func) {
+        this(func, 0, 0, 0);
     }
 
     public String getFunction() {

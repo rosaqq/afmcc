@@ -10,7 +10,7 @@ public interface CU30Wrap extends StdCallLibrary {
     void CU30WrapperInit();
     void CU30WrapperDispose();
 
-    String CU30WOpen(IntByReference USBVersion, IntByReference USBInstance, IntByReference DevID, IntByReference EEID);
+    String CU30WOpen(IntByReference USBInstance, IntByReference USBVersion, IntByReference DevID, IntByReference EEID);
 
     int CU30WGetEEpromInfo(int USBInstance, int USBVersion, int DevID, int EEID,
                            IntByReference pUSBVendorID, IntByReference pUSBProductID, IntByReference pUSBDeviceID,
