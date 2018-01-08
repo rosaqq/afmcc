@@ -1,5 +1,3 @@
-import com.sun.jna.ptr.IntByReference;
-
 import java.awt.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -38,7 +36,7 @@ public class Afmcc {
 
         //todo: rework to support multiple hardware interfaces
 
-        Cu30 cu30 = new Cu30(culib, 0,0,0,0);
+        Cu30 cu30 = new Cu30(culib, 1,1,1,1);
         System.out.println("[MAIN][CU30] - " + cu30.open());
 
         while(true){
@@ -71,8 +69,10 @@ public class Afmcc {
 
     private void dohat(Cu30 cu30, Qobj qobj) {
         int axis = (qobj.htop||qobj.hbot)?1:((qobj.hleft||qobj.hright)?2:3);
-        cu30.step(axis, stepVel[axis-1], steps[axis-1]);
-        System.out.printf("[MAIN] stepping from %s %d steps at %d vel\n", qobj.fromGui?"GUI":"GPAD", steps[axis-1], stepVel[axis-1]);
+        //if order came from negative axis button then use -stepVel
+        int velo = (qobj.hright || qobj.hbot || qobj.htri) ? -stepVel[axis - 1] : stepVel[axis - 1];
+        cu30.step(axis, velo, steps[axis - 1]);
+        System.out.printf("[MAIN] %s stepping from %s %d steps at %d vel\n", axis == 1 ? "X" : (axis == 2 ? "Y" : "Z"), qobj.fromGui ? "GUI" : "GPAD", steps[axis - 1], velo);
     }
 
     private void doax(Cu30 cu30, Qobj qobj) {

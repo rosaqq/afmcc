@@ -1,19 +1,10 @@
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
-import javax.swing.GroupLayout;
+import javax.swing.*;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.JScrollBar;
-import java.awt.Color;
-import javax.swing.JLabel;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.SwingConstants;
-import java.awt.event.*;
-import java.awt.Cursor;
-import javax.swing.JTextField;
-import java.awt.Dimension;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.JButton;
+import java.awt.*;
+import java.awt.event.*;
 
 public class Gui extends JFrame {
 
@@ -25,6 +16,8 @@ public class Gui extends JFrame {
 
     //todo: make tooltip of vel and step fields permanently visible
     //todo: have a set vel and steps event triggered by a value update on their JTextField so gamepad can use these values
+    //todo: make scrollbars react to the gamepad triggered movement (use repaintGUI?)
+    //todo: set default step value at 100 (default stepvel is to remain at 1)
 
     /**
      * Create the frame.

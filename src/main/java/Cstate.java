@@ -43,8 +43,15 @@ public class Cstate implements Runnable{
             else {
                 Qobj curr = new Qobj(currState);
                 Qobj last = new Qobj(lastState);
+
                 if(!curr.equals(last)) {
-                    bq.add(curr);
+                    System.out.println(curr);
+                    axreset = (Math.abs(last.axvel[0]) > 0 && curr.axvel[0] == 0) || (Math.abs(last.axvel[1]) > 0 && curr.axvel[1] == 0) || (Math.abs(last.axvel[2]) > 0 && curr.axvel[2] == 0);
+                    System.out.println(axreset);
+                    if (!(curr.trigger.equals("axis") && !axreset && curr.axvelIsZero)) {
+                        bq.add(curr);
+                        System.out.println("sent");
+                    } else System.out.println("not sent");
                 }
             }
 

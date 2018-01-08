@@ -20,8 +20,9 @@ public final class Qobj {
      *  Their names are based on the GPAD button names.
      *  The variables starting with h correspond to the GPAD hat + the x and triangle keys. These are responsible for step commands.
      *  L1 corresponds to the GPAD L1 key and is responsible for stop commands.
+     *  axvelIsZero is true if all the elements in axvel are zero
      */
-    public final boolean htop, hbot, hleft, hright, hx, htri, L1;
+    public final boolean htop, hbot, hleft, hright, hx, htri, L1, axvelIsZero;
 
     /**
      * This variable holds a string representing which set of keys triggered the creating of this object.
@@ -46,13 +47,16 @@ public final class Qobj {
 
         fromGui = false;
 
+        //these values are already set with the afm position
         //no need for raw axis values so only pass normalized ones
         //sweep vel x
-        axvel[0] = normalizeVel(cs.leftStickX*1000);
+        axvel[0] = normalizeVel(cs.leftStickY * 1000);
         //sweep vel y
-        axvel[1] = normalizeVel(cs.leftStickY*1000);
+        axvel[1] = normalizeVel(-cs.leftStickX * 1000);
         //sweep vel z
-        axvel[2] = normalizeVel(cs.rightStickY*1000);
+        axvel[2] = normalizeVel(-cs.rightStickY * 1000);
+
+        axvelIsZero = axvel[0] == 0 && axvel[1] == 0 && axvel[2] == 0;
 
         // x step
         htop = cs.dpadUpJustPressed;
@@ -63,6 +67,8 @@ public final class Qobj {
         // z step
         hx = cs.aJustPressed;
         htri = cs.yJustPressed;
+
+        //todo: add steps+-=10 on circle(+) and square(-) gamepad keys with live update on gui
 
         // L1 stop
         L1 = cs.lbJustPressed;
@@ -76,17 +82,17 @@ public final class Qobj {
     /**
      * The main constructor for the  {@link Gui GUI}.
      *
-     * Note: the mappings described below are subject to change.
+     * The mappings below are definitive.
      *
      * @param x Scrollbar X value, -1000<= x <= 1000, maps to this.axvel[0].
      * @param y Scrollbar Y value, -1000<= y <= 1000, maps to this.axvel[1].
      * @param z Scrollbar Z value, -1000<= z <= 1000, maps to this.axvel[2].
-     * @param bx1 -X step button, maps to this.htop.
-     * @param bx2 +X step button, maps to this.hbot.
-     * @param by1 -Y step button, maps to this.hleft.
-     * @param by2 -Y step button, maps to this.hright.
-     * @param bz1 -Z step button, maps to this.hx.
-     * @param bz2 +Z step button, maps to this.htri.
+     * @param bx1 -X step button, maps to this.hbot.
+     * @param bx2 +X step button, maps to this.htop.
+     * @param by1 -Y step button, maps to this.hright.
+     * @param by2 -Y step button, maps to this.hleft.
+     * @param bz1 -Z step button, maps to this.htri.
+     * @param bz2 +Z step button, maps to this.hx.
      * @param stop Stop button, maps to this.L1.
      */
     public Qobj(int x, int y, int z, boolean bx1, boolean bx2, boolean by1, boolean by2, boolean bz1, boolean bz2, boolean stop) {
@@ -101,15 +107,17 @@ public final class Qobj {
         //sweep vel z
         axvel[2] = z;
 
+        axvelIsZero = axvel[0] == 0 && axvel[1] == 0 && axvel[2] == 0;
+
         // x step
-        htop = bx1;
-        hbot = bx2;
+        htop = bx2;
+        hbot = bx1;
         // y step
-        hleft = by1;
-        hright = by2;
+        hleft = by2;
+        hright = by1;
         // z step
-        hx = bz1;
-        htri = bz2;
+        hx = bz2;
+        htri = bz1;
 
         // L1 stop
         L1 = stop;
