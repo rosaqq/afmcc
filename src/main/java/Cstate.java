@@ -1,7 +1,6 @@
 import com.studiohartman.jamepad.ControllerManager;
 import com.studiohartman.jamepad.ControllerState;
 
-import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class Cstate implements Runnable{
@@ -10,6 +9,7 @@ public class Cstate implements Runnable{
     private ControllerManager controllers;
     private LinkedBlockingQueue<Qobj> bq;
     private int cindex;
+    //keeping this here just in case
     private float thold;
     private boolean axreset = false;
 
@@ -39,9 +39,12 @@ public class Cstate implements Runnable{
                 close();
 
 
-            }else{
-                if(isSignificant(currState, lastState)) {
-                    bq.add(new Qobj(currState));
+            }
+            else {
+                Qobj curr = new Qobj(currState);
+                Qobj last = new Qobj(lastState);
+                if(!curr.equals(last)) {
+                    bq.add(curr);
                 }
             }
 
@@ -59,20 +62,5 @@ public class Cstate implements Runnable{
         else {
             System.out.println("[GPAD] gamepad already closed");
         }
-    }
-
-    private boolean isSignificant(ControllerState state, ControllerState lastState) {
-        if(state.equals(lastState)) return false;
-
-        boolean ret = true;
-        if(Math.abs(state.leftStickX)<thold && Math.abs(state.leftStickY)<thold && Math.abs(state.rightStickY)<thold) {
-            ret = axreset;
-            axreset = false;
-        }
-        else {
-            axreset = true;
-        }
-
-        return ret;
     }
 }

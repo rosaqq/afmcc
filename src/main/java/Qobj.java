@@ -1,16 +1,19 @@
 import com.studiohartman.jamepad.ControllerState;
 
+import java.util.Arrays;
+
 
 /**
  * Qobj.java
  * Purpose: Object for a LinkedBlockingQueue serving as communication from the {@link Gui GUI} and {@link Cstate GPAD} threads to the MAIN thread.
+ * All fields are public, but immutable.
  */
-public class Qobj {
+public final class Qobj {
 
     /**
      *  Specifies if this object comes from the {@link Gui GUI} or from the {@link Cstate GPAD}.
      */
-    public boolean fromGui;
+    public final boolean fromGui;
 
     /**
      *  Each of these corresponds to a button on the {@link Cstate GPAD} or the {@link Gui GUI}.
@@ -18,13 +21,13 @@ public class Qobj {
      *  The variables starting with h correspond to the GPAD hat + the x and triangle keys. These are responsible for step commands.
      *  L1 corresponds to the GPAD L1 key and is responsible for stop commands.
      */
-    public boolean htop, hbot, hleft, hright, hx, htri, L1;
+    public final boolean htop, hbot, hleft, hright, hx, htri, L1;
 
     /**
      * This variable holds a string representing which set of keys triggered the creating of this object.
      * Values can be "hat" (which includes the triangle and the x keys), "axis" (representing the joysticks), and "L1" (for just the L1 key).
      */
-    public String trigger;
+    public final String trigger;
 
     //ax velocity can come from both gui and controller
     //but steps and step velocity can only come from gui so they are fields in the main class
@@ -32,7 +35,7 @@ public class Qobj {
      * This array holds the values for the sweep velocities coming either from the {@link Gui GUI} scrollbars or the {@link Cstate GPAD} joysticks.
      * Step number and velocity can only come from the GUI so they are volatile fields in the main class.
      */
-    public int[] axvel = new int[3];
+    public final int[] axvel = new int[3];
 
     /**
      * The constructor for the gamepad ({@link Cstate GPAD}).
@@ -130,11 +133,28 @@ public class Qobj {
     }
 
     /**
-     * Qobj override of the Java toString method.
-     * @return String saying whether this Qobj was constructed from the {@link Gui GUI} or from the {@link Cstate GPAD}.
+     * Qobj override of the Object toString method.
+     * @return String with values for all of the Qobj fields.
      */
     @Override
     public String toString() {
-        return "[QOBJ] Recieved queue object from " + (fromGui? "GUI" : "GPAD");
+        return "[QOBJ] from " + (fromGui? "GUI" : "GPAD") + ".\n" + "Contents:" +
+                        "\n\thtop: "+htop+"\n\thbot: "+hbot+"\n\thleft: "+hleft+"\n\thright: "+hright+
+                        "\n\thx: "+hx+"\n\thtri: "+htri+"\n\tL1: "+L1+ "\n\ttrigger: "+trigger+"\n\taxvel: "+
+                        Arrays.toString(axvel);
+    }
+
+    /**
+     * Qobj override of the Object equals method.
+     * @param obj the object to compare with this one.
+     * @return true if obj instanceof Qobj and all the values of it's fields are the same as this Qobj's fields.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if(!(obj instanceof Qobj)) return false;
+        Qobj a = (Qobj) obj;
+        return  a.fromGui==this.fromGui && a.htop==this.htop && a.hbot==this.hbot && a.hleft==this.hleft &&
+                a.hright==this.hright && a.hx==this.hx && a.htri==this.htri && a.L1==this.L1 &&
+                a.trigger.equals(this.trigger) && Arrays.equals(a.axvel, this.axvel);
     }
 }
