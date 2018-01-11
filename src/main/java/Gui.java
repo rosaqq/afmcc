@@ -99,36 +99,24 @@ public class Gui extends JFrame {
                 xScrollBar.setValue(0);
             }
         });
-        xScrollBar.addAdjustmentListener(new AdjustmentListener() {
-            public void adjustmentValueChanged(AdjustmentEvent e) {
-                if(e.getValueIsAdjusting() || (!e.getValueIsAdjusting() && xScrollBar.getValue()==0) ) {
-                    System.out.println("[GUI] X: " + xScrollBar.getValue());
-                    xLabel.setText(String.valueOf(xScrollBar.getValue()));
-                    if(xScrollBar.getValue()!=0) afmcc.bq.add(new Qobj(xScrollBar.getValue(), 0, 0, false, false, false, false, false, false, false));
-                    else afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, false, true));
-                } else{
-                    System.out.println("[GUI] X bar stop");
-                    xLabel.setText(String.valueOf(xScrollBar.getValue()));
-                }
-
+        xScrollBar.addAdjustmentListener(e -> {
+            if(e.getValueIsAdjusting() || (!e.getValueIsAdjusting() && xScrollBar.getValue()==0) ) {
+                System.out.println("[GUI] X: " + xScrollBar.getValue());
+                xLabel.setText(String.valueOf(xScrollBar.getValue()));
+                if(xScrollBar.getValue()!=0) afmcc.bq.add(new Qobj(xScrollBar.getValue(), 0, 0, false, false, false, false, false, false, false));
+                else afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, false, true));
+            } else{
+                System.out.println("[GUI] X bar stop");
+                xLabel.setText(String.valueOf(xScrollBar.getValue()));
             }
+
         });
 
         JButton xButton1 = new JButton(">");
-        xButton1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                afmcc.bq.add(new Qobj(0, 0, 0, false, true, false, false, false, false, false));
-            }
-        });
+        xButton1.addActionListener(e -> afmcc.bq.add(new Qobj(0, 0, 0, false, true, false, false, false, false, false)));
 
         JButton xButton2 = new JButton("<");
-        xButton2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                afmcc.bq.add(new Qobj(0, 0, 0, true, false, false, false, false, false, false));
-            }
-        });
+        xButton2.addActionListener(e -> afmcc.bq.add(new Qobj(0, 0, 0, true, false, false, false, false, false, false)));
 
         xSteps.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -212,39 +200,25 @@ public class Gui extends JFrame {
                 yScrollBar.setValue(0);
             }
         });
-        yScrollBar.addAdjustmentListener(new AdjustmentListener() {
-            public void adjustmentValueChanged(AdjustmentEvent e) {
+        yScrollBar.addAdjustmentListener(e -> {
+            if(e.getValueIsAdjusting() || (!e.getValueIsAdjusting() && yScrollBar.getValue()==0) ) {
+                System.out.println("[GUI] Y: " + yScrollBar.getValue());
+                yLabel.setText(String.valueOf(yScrollBar.getValue()));
+                if(yScrollBar.getValue()!=0) afmcc.bq.add(new Qobj(0, yScrollBar.getValue(), 0, false, false, false, false, false, false, false));
+                else afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, false, true));
 
-                if(e.getValueIsAdjusting() || (!e.getValueIsAdjusting() && yScrollBar.getValue()==0) ) {
-                    System.out.println("[GUI] Y: " + yScrollBar.getValue());
-                    yLabel.setText(String.valueOf(yScrollBar.getValue()));
-                    if(yScrollBar.getValue()!=0) afmcc.bq.add(new Qobj(0, yScrollBar.getValue(), 0, false, false, false, false, false, false, false));
-                    else afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, false, true));
-
-                } else{
-                    System.out.println("[GUI] Y bar stop");
-                    yLabel.setText(String.valueOf(yScrollBar.getValue()));
-                }
-
+            } else{
+                System.out.println("[GUI] Y bar stop");
+                yLabel.setText(String.valueOf(yScrollBar.getValue()));
             }
+
         });
 
         JButton yButton1 = new JButton(">");
-        yButton1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, true, false, false, false));
-
-            }
-        });
+        yButton1.addActionListener(e -> afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, true, false, false, false)));
 
         JButton yButton2 = new JButton("<");
-        yButton2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                afmcc.bq.add(new Qobj(0, 0, 0, false, false, true, false, false, false, false));
-            }
-        });
+        yButton2.addActionListener(e -> afmcc.bq.add(new Qobj(0, 0, 0, false, false, true, false, false, false, false)));
 
         ySteps.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -330,35 +304,23 @@ public class Gui extends JFrame {
                 zScrollBar.setValue(0);
             }
         });
-        zScrollBar.addAdjustmentListener(new AdjustmentListener() {
-            public void adjustmentValueChanged(AdjustmentEvent e) {
-                if(e.getValueIsAdjusting() || (!e.getValueIsAdjusting() && zScrollBar.getValue()==0) ) {
-                    System.out.println("[GUI] Z: " + zScrollBar.getValue());
-                    zLabel.setText(String.valueOf(zScrollBar.getValue()));
-                    if(zScrollBar.getValue()!=0) afmcc.bq.add(new Qobj(0, 0, zScrollBar.getValue(), false, false, false, false, false, false, false));
-                    else afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, false, true));
-                } else{
-                    System.out.println("[GUI] Z bar stop");
-                    zLabel.setText(String.valueOf(zScrollBar.getValue()));
-                }
+        zScrollBar.addAdjustmentListener(e -> {
+            if(e.getValueIsAdjusting() || (!e.getValueIsAdjusting() && zScrollBar.getValue()==0) ) {
+                System.out.println("[GUI] Z: " + zScrollBar.getValue());
+                zLabel.setText(String.valueOf(zScrollBar.getValue()));
+                if(zScrollBar.getValue()!=0) afmcc.bq.add(new Qobj(0, 0, zScrollBar.getValue(), false, false, false, false, false, false, false));
+                else afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, false, true));
+            } else{
+                System.out.println("[GUI] Z bar stop");
+                zLabel.setText(String.valueOf(zScrollBar.getValue()));
             }
         });
 
         JButton zButton1 = new JButton(">");
-        zButton1.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, true, false));
-            }
-        });
+        zButton1.addActionListener(e -> afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, true, false)));
 
         JButton zButton2 = new JButton("<");
-        zButton2.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, true, false, false));
-            }
-        });
+        zButton2.addActionListener(e -> afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, true, false, false)));
 
         zSteps.getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -394,14 +356,14 @@ public class Gui extends JFrame {
             }
         });
 
-        //todo: add this button to the group layout
+
         JButton stopb = new JButton("STOP!");
-        stopb.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, false, true));
-            }
+        stopb.setForeground(Color.RED);
+        stopb.addActionListener(e -> {
+            afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, false, true));
+            System.out.println("[GUI] STOP!");
         });
+
 
 
         GroupLayout gl_contentPane = new GroupLayout(contentPane);
@@ -459,6 +421,10 @@ public class Gui extends JFrame {
                                                 .addGap(5)
                                                 .addComponent(xButton1, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)))
                                 .addGap(117))
+                        .addGroup(gl_contentPane.createSequentialGroup()
+                                .addGap(257)
+                                .addComponent(stopb)
+                                .addContainerGap(271, Short.MAX_VALUE))
         );
         gl_contentPane.setVerticalGroup(
                 gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -514,6 +480,8 @@ public class Gui extends JFrame {
                                                 .addPreferredGap(ComponentPlacement.RELATED)
                                                 .addComponent(zSteps, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE))
                                         .addComponent(zButton1, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE))
+                                .addGap(18)
+                                .addComponent(stopb)
                                 .addGap(282))
         );
         contentPane.setLayout(gl_contentPane);
