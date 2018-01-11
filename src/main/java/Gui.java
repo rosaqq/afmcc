@@ -3,6 +3,8 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -14,10 +16,7 @@ public class Gui extends JFrame {
     private JTextField xSteps, ySteps, zSteps;
     private JTextField xVel, yVel, zVel;
 
-    //todo: make tooltip of vel and step fields permanently visible
-    //todo: have a set vel and steps event triggered by a value update on their JTextField so gamepad can use these values
     //todo: make scrollbars react to the gamepad triggered movement (use repaintGUI?)
-    //todo: set default step value at 100 (default stepvel is to remain at 1)
 
     /**
      * Create the frame.
@@ -67,12 +66,13 @@ public class Gui extends JFrame {
 
         xSteps = new JTextField();
         xSteps.setToolTipText("Steps");
-        xSteps.setText("1");
+        xSteps.setText("100");
         xSteps.setMinimumSize(new Dimension(40, 20));
         xSteps.setMaximumSize(new Dimension(40, 20));
         xSteps.setHorizontalAlignment(SwingConstants.CENTER);
         xSteps.setColumns(10);
         xSteps.setBorder(new LineBorder(new Color(0, 0, 0)));
+        fillSteps(xSteps, 1);
 
         xVel = new JTextField();
         xVel.setToolTipText("Velocity");
@@ -82,6 +82,7 @@ public class Gui extends JFrame {
         xVel.setHorizontalAlignment(SwingConstants.CENTER);
         xVel.setColumns(10);
         xVel.setBorder(new LineBorder(new Color(0, 0, 0)));
+        fillVel(xVel, 1);
 
         JScrollBar xScrollBar = new JScrollBar();
         xScrollBar.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
@@ -117,19 +118,7 @@ public class Gui extends JFrame {
         xButton1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
-                    int xS = Integer.parseInt(xSteps.getText());
-                    int xV = Integer.parseInt(xVel.getText());
-                    if(xV>0 && xS>0 && xV<=1000 && xS<=1000000) {
-                        System.out.println("[GUI] +xVel: " + xV +", +xSteps: " + xS);
-                        afmcc.steps[0] = xS;
-                        afmcc.stepVel[0] = xV;
-                        afmcc.bq.add(new Qobj(0, 0, 0, false, true, false, false, false, false, false));
-                    }else System.out.println("[GUI] +x invalid args!");
-                } catch (NumberFormatException exc) {
-                    // not an integer/s
-                    System.out.println("[GUI] +x invalid args!");
-                }
+                afmcc.bq.add(new Qobj(0, 0, 0, false, true, false, false, false, false, false));
             }
         });
 
@@ -137,19 +126,41 @@ public class Gui extends JFrame {
         xButton2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
-                    int xS = Integer.parseInt(xSteps.getText());
-                    int xV = Integer.parseInt(xVel.getText());
-                    if( xV>0 && xS>0 && xV<=1000 && xS<=1000000) {
-                        System.out.println("[GUI] -xVel: " + xV +" -xSteps: " + xS);
-                        afmcc.steps[0] = xS;
-                        afmcc.stepVel[0] = xV;
-                        afmcc.bq.add(new Qobj(0, 0, 0, true, false, false, false, false, false, false));
-                    }else System.out.println("[GUI] -x invalid args!");
-                } catch (NumberFormatException exc) {
-                    // not an integer/s
-                    System.out.println("[GUI] -x invalid args!");
-                }
+                afmcc.bq.add(new Qobj(0, 0, 0, true, false, false, false, false, false, false));
+            }
+        });
+
+        xSteps.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                fillSteps(xSteps, 1);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                fillSteps(xSteps, 1);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                fillSteps(xSteps, 1);
+            }
+        });
+
+        xVel.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                fillVel(xVel, 1);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                fillVel(xVel, 1);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                fillVel(xVel, 1);
             }
         });
 
@@ -174,15 +185,17 @@ public class Gui extends JFrame {
         yVel.setHorizontalAlignment(SwingConstants.CENTER);
         yVel.setColumns(10);
         yVel.setBorder(new LineBorder(new Color(0, 0, 0)));
+        fillVel(yVel, 2);
 
         ySteps = new JTextField();
         ySteps.setToolTipText("Steps");
-        ySteps.setText("1");
+        ySteps.setText("100");
         ySteps.setMinimumSize(new Dimension(40, 20));
         ySteps.setMaximumSize(new Dimension(40, 20));
         ySteps.setHorizontalAlignment(SwingConstants.CENTER);
         ySteps.setColumns(10);
         ySteps.setBorder(new LineBorder(new Color(0, 0, 0)));
+        fillSteps(ySteps, 2);
 
         JScrollBar yScrollBar = new JScrollBar();
         yScrollBar.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
@@ -220,19 +233,7 @@ public class Gui extends JFrame {
         yButton1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
-                    int yS = Integer.parseInt(ySteps.getText());
-                    int yV = Integer.parseInt(yVel.getText());
-                    if( yV>0 && yS>0 && yV<=1000 && yS<=1000000) {
-                        System.out.println("[GUI] +yVel: " + yV +", +ySteps: " + yS);
-                        afmcc.steps[1] = yS;
-                        afmcc.stepVel[1] = yV;
-                        afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, true, false, false, false));
-                    }else System.out.println("[GUI] +y invalid args!");
-                } catch (NumberFormatException exc) {
-                    // not an integer/s
-                    System.out.println("[GUI] +y invalid args!");
-                }
+                afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, true, false, false, false));
 
             }
         });
@@ -241,19 +242,41 @@ public class Gui extends JFrame {
         yButton2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
-                    int yS = Integer.parseInt(ySteps.getText());
-                    int yV = Integer.parseInt(yVel.getText());
-                    if( yV>0 && yS>0 && yV<=1000 && yS<=1000000) {
-                        System.out.println("[GUI] -yVel: " + yV +", -ySteps: " + yS);
-                        afmcc.steps[1] = yS;
-                        afmcc.stepVel[1] = yV;
-                        afmcc.bq.add(new Qobj(0, 0, 0, false, false, true, false, false, false, false));
-                    }else System.out.println("[GUI] -y invalid args!");
-                } catch (NumberFormatException exc) {
-                    // not an integer/s
-                    System.out.println("[GUI] -y invalid args!");
-                }
+                afmcc.bq.add(new Qobj(0, 0, 0, false, false, true, false, false, false, false));
+            }
+        });
+
+        ySteps.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                fillSteps(ySteps, 2);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                fillSteps(ySteps, 2);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                fillSteps(ySteps, 2);
+            }
+        });
+
+        yVel.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                fillVel(yVel, 2);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                fillVel(yVel, 2);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                fillVel(yVel, 2);
             }
         });
 
@@ -280,15 +303,17 @@ public class Gui extends JFrame {
         zVel.setHorizontalAlignment(SwingConstants.CENTER);
         zVel.setColumns(10);
         zVel.setBorder(new LineBorder(new Color(0, 0, 0)));
+        fillVel(zVel, 3);
 
         zSteps = new JTextField();
         zSteps.setToolTipText("Steps");
-        zSteps.setText("1");
+        zSteps.setText("100");
         zSteps.setMinimumSize(new Dimension(40, 20));
         zSteps.setMaximumSize(new Dimension(40, 20));
         zSteps.setHorizontalAlignment(SwingConstants.CENTER);
         zSteps.setColumns(10);
         zSteps.setBorder(new LineBorder(new Color(0, 0, 0)));
+        fillSteps(zSteps, 3);
 
         JScrollBar zScrollBar = new JScrollBar();
         zScrollBar.setCursor(Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR));
@@ -323,20 +348,7 @@ public class Gui extends JFrame {
         zButton1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //procar func c CU30Step
-                try{
-                    int zS = Integer.parseInt(zSteps.getText());
-                    int zV = Integer.parseInt(zVel.getText());
-                    if( zV>0 && zS>0 && zV<=1000 && zS<=1000000) {
-                        System.out.println("[GUI] +zVel: " + zV +", +zSteps: " + zS);
-                        afmcc.steps[2] = zS;
-                        afmcc.stepVel[2] = zV;
-                        afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, true, false));
-                    }else System.out.println("[GUI] +z invalid args!");
-                } catch (NumberFormatException exc) {
-                    // not an integer/s
-                    System.out.println("[GUI] +z invalid args!");
-                }
+                afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, true, false));
             }
         });
 
@@ -344,19 +356,50 @@ public class Gui extends JFrame {
         zButton2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try{
-                    int zS = Integer.parseInt(zSteps.getText());
-                    int zV = Integer.parseInt(zVel.getText());
-                    if( zV>0 && zS>0 && zV<=1000 && zS<=1000000) {
-                        System.out.println("[GUI] -zVel: " + zV +", -zSteps: " + zS);
-                        afmcc.steps[2] = zS;
-                        afmcc.stepVel[2] = zV;
-                        afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, true, false, false));
-                    }else System.out.println("[GUI] -z invalid args!");
-                } catch (NumberFormatException exc) {
-                    // not an integer/s
-                    System.out.println("[GUI] -z invalid args!");
-                }
+                afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, true, false, false));
+            }
+        });
+
+        zSteps.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                fillSteps(zSteps, 3);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                fillSteps(zSteps, 3);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                fillSteps(zSteps, 3);
+            }
+        });
+
+        zVel.getDocument().addDocumentListener(new DocumentListener() {
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                fillVel(zVel, 3);
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                fillVel(zVel, 3);
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                fillVel(zVel, 3);
+            }
+        });
+
+        //todo: add this button to the group layout
+        JButton stopb = new JButton("STOP!");
+        stopb.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, false, true));
             }
         });
 
@@ -474,5 +517,37 @@ public class Gui extends JFrame {
                                 .addGap(282))
         );
         contentPane.setLayout(gl_contentPane);
+    }
+
+    private void fillSteps(JTextField steps, int axis) {
+        try{
+            int ss = Integer.parseInt(steps.getText());
+            if(ss>0 && ss<=1000000) {
+                afmcc.steps[axis-1] = ss;
+                System.out.printf("[GUI] %s steps set to %d\n", axis==1?"x":(axis==2?"y":"z"), ss);
+            }
+            else {
+                System.out.printf("[GUI] %s vel invalid args!\n", axis==1?"x":(axis==2?"y":"z"));
+            }
+        }
+        catch(NumberFormatException exc) {
+            System.out.printf("[GUI] %s step invalid args!\n", axis==1?"x":(axis==2?"y":"z"));
+        }
+    }
+
+    private void fillVel(JTextField vel, int axis) {
+        try{
+            int vv = Integer.parseInt(vel.getText());
+            if(vv>0 && vv<=1000) {
+                afmcc.stepVel[axis-1] = vv;
+                System.out.printf("[GUI] %s vel set to %d\n", axis==1?"x":(axis==2?"y":"z"), vv);
+            }
+            else {
+                System.out.printf("[GUI] %s vel invalid args!\n", axis==1?"x":(axis==2?"y":"z"));
+            }
+        }
+        catch(NumberFormatException exc) {
+            System.out.printf("[GUI] %s invalid args!\n", axis==1?"x":(axis==2?"y":"z"));
+        }
     }
 }
