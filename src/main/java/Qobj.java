@@ -59,13 +59,13 @@ public final class Qobj {
         //no need for raw axis values so only pass normalized ones
         //sweep vel x
         int x = normalizeVel(cs.leftStickY * 1000);
-        axvel[0] = x<thold?0:x;
+        axvel[0] = Math.abs(x)<thold?0:x;
         //sweep vel y
         int y = normalizeVel(-cs.leftStickX * 1000);
-        axvel[1] = y<thold?0:y;
+        axvel[1] = Math.abs(y)<thold?0:y;
         //sweep vel z
         int z = normalizeVel(-cs.rightStickY * 1000);
-        axvel[2] = z<thold?0:z;
+        axvel[2] = Math.abs(z)<thold?0:z;
 
 
         axvelIsZero = axvel[0] == 0 && axvel[1] == 0 && axvel[2] == 0;
