@@ -20,7 +20,7 @@ public final class Qobj {
      *  Their names are based on the GPAD button names.
      *  The variables starting with h correspond to the GPAD hat + the x and triangle keys. These are responsible for step commands.
      *  L1 corresponds to the GPAD L1 key and is responsible for stop commands.
-     *  axvelIsZero is true if all the elements in axvel are zero
+     *  axvelIsZero is true if all the elements in axvel are zero.
      */
     public final boolean htop, hbot, hleft, hright, hx, htri, L1, axvelIsZero;
 
@@ -39,22 +39,34 @@ public final class Qobj {
     public final int[] axvel = new int[3];
 
     /**
+     * Threshold value to filter out gamepad axis analog fluctuations.
+     * isConnected: 0 for no controller connected; 1 for controller connected; 2 for Qobj from GUI.
+     */
+    public final int thold, isConnected;
+
+    /**
      * The constructor for the gamepad ({@link Cstate GPAD}).
      *
      * @param cs The ControllerState from the gamepad.
      */
-    public Qobj(ControllerState cs) {
+    public Qobj(ControllerState cs, int threshold) {
 
         fromGui = false;
+        isConnected = cs.isConnected?1:0;
+        thold = threshold;
 
         //these values are already set with the afm position
         //no need for raw axis values so only pass normalized ones
         //sweep vel x
-        axvel[0] = normalizeVel(cs.leftStickY * 1000);
+        int x = normalizeVel(cs.leftStickY * 1000);
+        axvel[0] = x<thold?0:x;
         //sweep vel y
-        axvel[1] = normalizeVel(-cs.leftStickX * 1000);
+        int y = normalizeVel(-cs.leftStickX * 1000);
+        axvel[1] = y<thold?0:y;
         //sweep vel z
-        axvel[2] = normalizeVel(-cs.rightStickY * 1000);
+        int z = normalizeVel(-cs.rightStickY * 1000);
+        axvel[2] = z<thold?0:z;
+
 
         axvelIsZero = axvel[0] == 0 && axvel[1] == 0 && axvel[2] == 0;
 
@@ -98,6 +110,8 @@ public final class Qobj {
     public Qobj(int x, int y, int z, boolean bx1, boolean bx2, boolean by1, boolean by2, boolean bz1, boolean bz2, boolean stop) {
 
         fromGui = true;
+        isConnected=2;
+        thold = 0;
 
         //values already normalized from gui
         //sweep vel x
@@ -108,6 +122,7 @@ public final class Qobj {
         axvel[2] = z;
 
         axvelIsZero = axvel[0] == 0 && axvel[1] == 0 && axvel[2] == 0;
+
 
         // x step
         htop = bx2;

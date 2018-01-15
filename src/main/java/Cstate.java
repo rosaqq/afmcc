@@ -10,13 +10,13 @@ public class Cstate implements Runnable{
     private LinkedBlockingQueue<Qobj> bq;
     private int cindex;
     //keeping this here just in case
-    private float thold;
+    private int thold;
     private boolean axreset = false;
 
     public Cstate(int x, LinkedBlockingQueue<Qobj> queue) {
         bq = queue;
         cindex = x;
-        thold = 0.08f;
+        thold = 50;
         controllers = new ControllerManager();
         controllers.initSDLGamepad();
     }
@@ -25,15 +25,15 @@ public class Cstate implements Runnable{
     @Override
     public void run() {
 
-        ControllerState currState = controllers.getState(cindex);
-        ControllerState lastState;
+        Qobj curr = new Qobj(controllers.getState(cindex), thold);
+        Qobj last;
 
         while(inloop){
 
-            lastState = currState;
-            currState = controllers.getState(cindex);
+            last = curr;
+            curr = new Qobj(controllers.getState(cindex), thold);
 
-            if(!currState.isConnected) {
+            if(curr.isConnected==0) {
 
                 System.out.println("[GPAD] controller not connected");
                 close();
@@ -41,8 +41,6 @@ public class Cstate implements Runnable{
 
             }
             else {
-                Qobj curr = new Qobj(currState);
-                Qobj last = new Qobj(lastState);
 
                 if(!curr.equals(last)) {
                     System.out.println(curr);
