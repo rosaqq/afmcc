@@ -11,7 +11,7 @@ public class Afmcc {
     public volatile int[] steps =  new int[3];
     public Cu30[] devices = new Cu30[16];
 
-    public int currEEID = -1;
+    public volatile int currEEID = -1;
 
     private int controllerIndex = 0;
     private CU30Wrap culib;
@@ -101,7 +101,7 @@ public class Afmcc {
     private void checkDevs() {
         for(int i = 0;i<16;++i) {
             boolean flag = devices[i].isConnected();
-            if(flag && currEEID ==-1) currEEID =i;
+            if(flag && currEEID ==-1) currEEID = i;
             System.out.println("[MAIN][CU30-"+i+"] - " + flag);
         }
         System.out.println("[MAIN][CU30-"+ currEEID +"] - set to current device.");
