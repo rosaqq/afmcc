@@ -3,7 +3,8 @@ import com.sun.jna.ptr.IntByReference;
 public class Cu30 {
 
     private CU30Wrap lib;
-    private int usbver, usbinst, devid, eeid;
+    //EEID changes for different devices, rest is constant
+    public int usbver, usbinst, devid, eeid;
 
     public Cu30(CU30Wrap culib, int USBInstance, int USBVersion, int DevID, int EEID) {
 
@@ -31,7 +32,9 @@ public class Cu30 {
     }
 
     void close() {
+        stop();
         lib.CU30WClose(usbinst, usbver, devid, eeid);
+        System.out.println("[HW][CU30-"+eeid+"] Wrapper closed.");
     }
 
     void step(int axis, int vel, int steps) {
@@ -44,5 +47,10 @@ public class Cu30 {
 
     void stop() {
         lib.CU30WStop(usbinst, usbver, devid, eeid);
+    }
+
+    boolean isConnected() {
+        String refStr = open();
+        return "".equals(refStr);
     }
 }

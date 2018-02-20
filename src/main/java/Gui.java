@@ -32,6 +32,7 @@ public class Gui extends JFrame {
             @Override
             public void windowClosing(WindowEvent e) {
                 afmcc.cstate.close();
+                afmcc.closeAll();
                 System.exit(0);
             }
             @Override

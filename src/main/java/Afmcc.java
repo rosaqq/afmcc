@@ -5,8 +5,13 @@ public class Afmcc {
 
 
     public LinkedBlockingQueue<Qobj> bq;
+    //for some reason intellij underlines these 3 arrays as a redundant initialization but without it this all goes NPE
+    //if you have any idea why intellij underlines this then please by all means do share it with me
     public volatile int[] stepVel =  new int[3];
     public volatile int[] steps =  new int[3];
+    public Cu30[] devices = new Cu30[16];
+
+    public int currEEID = -1;
 
     private int controllerIndex = 0;
     private CU30Wrap culib;
@@ -36,8 +41,8 @@ public class Afmcc {
 
         //todo: rework to support multiple hardware interfaces
 
-        Cu30 cu30 = new Cu30(culib, 1,1,1,1);
-        System.out.println("[MAIN][CU30] - " + cu30.open());
+        initDevs();
+        checkDevs();
 
         while(true){
             try {
@@ -45,19 +50,21 @@ public class Afmcc {
 
                 switch(qobj.trigger) {
                     case "L1":
-                        cu30.stop();
+                        devices[currEEID].stop();
                         break;
                     case "hat":
-                        dohat(cu30, qobj);
+                        dohat(devices[currEEID], qobj);
                         break;
                     case "axis":
-                        doax(cu30, qobj);
+                        doax(devices[currEEID], qobj);
                         break;
                 }
 
                 repaintGui();
             } catch (InterruptedException e) {
                 System.out.println("[MAIN] loop interrupted: " + e);
+                cstate.close();
+                closeAll();
             }
         }
 
@@ -82,6 +89,29 @@ public class Afmcc {
         int axis = x>y ? (x>z ? 1 : 3) : (y>z ? 2 : 3);
         cu30.sweep(axis, qobj.axvel[axis-1], 0);
         System.out.printf("[MAIN] %s sweeping from %s at %d vel\n", axis==1?"X":(axis==2?"Y":"Z"), qobj.fromGui?"GUI":"GPAD", qobj.axvel[axis-1]);
+    }
+
+    private void initDevs() {
+        for(int i = 0;i<16;++i) {
+            devices[i] = new Cu30(culib, 1,1,1, i);
+        }
+        System.out.println("[MAIN] Device array filled.");
+    }
+
+    private void checkDevs() {
+        for(int i = 0;i<16;++i) {
+            boolean flag = devices[i].isConnected();
+            if(flag && currEEID ==-1) currEEID =i;
+            System.out.println("[MAIN][CU30-"+i+"] - " + flag);
+        }
+        System.out.println("[MAIN][CU30-"+ currEEID +"] - set to current device.");
+    }
+
+    void closeAll() {
+        for(int i = 0;i<16;++i) {
+            devices[i].close();
+            System.out.println("[MAIN][CU30-"+i+"] - closed");
+        }
     }
 
     public static void main(String[] args) {
