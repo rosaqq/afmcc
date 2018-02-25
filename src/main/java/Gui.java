@@ -49,6 +49,7 @@ public class Gui extends JFrame {
         setBounds(100, 100, 617, 572);
         contentPane = new JPanel();
         contentPane.setBackground(Color.LIGHT_GRAY);
+        setLocationRelativeTo(null);
         contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
         setContentPane(contentPane);
 
@@ -365,6 +366,25 @@ public class Gui extends JFrame {
             System.out.println("[GUI] STOP!");
         });
 
+        JButton xZero = new JButton("0");
+        JButton xOne = new JButton("1");
+        JButton xTwo = new JButton("2");
+        JButton xThree = new JButton("3");
+        JButton xFour = new JButton("4");
+        JButton xFive = new JButton("5");
+        JButton xSix = new JButton("6");
+        JButton xSev = new JButton("7");
+        JButton xEight = new JButton("8");
+        JButton xNine = new JButton("9");
+        JButton xTen = new JButton("10");
+        JButton xElev = new JButton("11");
+        JButton xTwelv = new JButton("12");
+        JButton xThirt = new JButton("13");
+        JButton xFourt = new JButton("14");
+        JButton xFift = new JButton("15");
+        JButton checkDev = new JButton("Check Devices");
+        JLabel devStatus = new JLabel("No device connected!");
+
 
 
         GroupLayout gl_contentPane = new GroupLayout(contentPane);
@@ -420,12 +440,41 @@ public class Gui extends JFrame {
                                                 .addGap(5)
                                                 .addComponent(xSteps, GroupLayout.PREFERRED_SIZE, 60, GroupLayout.PREFERRED_SIZE)
                                                 .addGap(5)
-                                                .addComponent(xButton1, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE)))
-                                .addGap(117))
+                                                .addComponent(xButton1, GroupLayout.PREFERRED_SIZE, 45, GroupLayout.PREFERRED_SIZE))))
                         .addGroup(gl_contentPane.createSequentialGroup()
-                                .addGap(257)
-                                .addComponent(stopb)
-                                .addContainerGap(271, Short.MAX_VALUE))
+                                .addGap(254)
+                                .addComponent(stopb))
+
+                        .addGroup(gl_contentPane.createSequentialGroup()
+                                .addGap(225)
+                                .addComponent(devStatus, GroupLayout.PREFERRED_SIZE, 200, GroupLayout.PREFERRED_SIZE))
+
+                        .addGroup(gl_contentPane.createSequentialGroup()
+                                .addGap(87)
+                                .addComponent(xZero, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(xOne, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(xTwo, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(xThree, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(xFour, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(xFive, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(xSix, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(xSev, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
+
+                        .addGroup(gl_contentPane.createSequentialGroup()
+                                .addGap(87)
+                                .addComponent(xEight, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(xNine, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(xTen, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(xElev, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(xTwelv, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(xThirt, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(xFourt, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(xFift, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
+
+                        .addGroup(gl_contentPane.createSequentialGroup()
+                                .addGap(228)
+                                .addComponent(checkDev)
+                                .addGap(220))
         );
         gl_contentPane.setVerticalGroup(
                 gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -483,7 +532,31 @@ public class Gui extends JFrame {
                                         .addComponent(zButton1, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE))
                                 .addGap(18)
                                 .addComponent(stopb)
-                                .addGap(282))
+                                .addGap(20)
+                                .addComponent(devStatus)
+                                .addGap(20)
+                                .addGroup(gl_contentPane.createSequentialGroup()
+                                        .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+                                                .addComponent(xZero)
+                                                .addComponent(xOne)
+                                                .addComponent(xTwo)
+                                                .addComponent(xThree)
+                                                .addComponent(xFour)
+                                                .addComponent(xFive)
+                                                .addComponent(xSix)
+                                                .addComponent(xSev))
+                                        .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+                                                .addComponent(xEight)
+                                                .addComponent(xNine)
+                                                .addComponent(xTen)
+                                                .addComponent(xElev)
+                                                .addComponent(xTwelv)
+                                                .addComponent(xThirt)
+                                                .addComponent(xFourt)
+                                                .addComponent(xFift)))
+                                .addGap(18)
+                                .addComponent(checkDev)
+                                .addGap(50))
         );
         contentPane.setLayout(gl_contentPane);
     }

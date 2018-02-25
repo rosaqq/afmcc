@@ -23,6 +23,8 @@ public class Afmcc {
         EventQueue.invokeLater(() -> {
             try {
                 Gui frame = new Gui(this);
+                frame.pack();
+                frame.setResizable(false);
                 frame.setVisible(true);
             } catch (Exception e) {
                 e.printStackTrace();
