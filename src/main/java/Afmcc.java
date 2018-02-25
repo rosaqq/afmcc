@@ -100,20 +100,24 @@ public class Afmcc {
         System.out.println("[MAIN] Device array filled.");
     }
 
-    private void checkDevs() {
-        for(int i = 0;i<16;++i) {
-            boolean flag = devices[i].isConnected();
-            if(flag && currEEID ==-1) currEEID = i;
-            System.out.println("[MAIN][CU30-"+i+"] - " + flag);
-        }
-        System.out.println("[MAIN][CU30-"+ currEEID +"] - set to current device.");
-    }
-
     void closeAll() {
         for(int i = 0;i<16;++i) {
             devices[i].close();
             System.out.println("[MAIN][CU30-"+i+"] - closed");
         }
+    }
+
+    public synchronized void checkDevs() {
+        closeAll();
+        boolean noConnected = true;
+        for(int i = 0;i<16;++i) {
+            boolean flag = devices[i].isConnected();
+            noConnected = noConnected && !flag;
+            if(flag && currEEID ==-1) currEEID = i;
+            System.out.println("[MAIN][CU30-"+i+"] - " + flag);
+        }
+        if(noConnected) currEEID = -1;
+        System.out.println("[MAIN][CU30-"+ currEEID +"] - set to current device.");
     }
 
     public static void main(String[] args) {

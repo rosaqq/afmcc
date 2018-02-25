@@ -12,7 +12,7 @@ public class Gui extends JFrame {
 
     private Afmcc afmcc;
     private JPanel contentPane;
-    private JLabel xLabel, yLabel, zLabel;
+    private JLabel xLabel, yLabel, zLabel, devStatus;
     private JTextField xSteps, ySteps, zSteps;
     private JTextField xVel, yVel, zVel;
 
@@ -366,24 +366,95 @@ public class Gui extends JFrame {
             System.out.println("[GUI] STOP!");
         });
 
-        JButton xZero = new JButton("0");
-        JButton xOne = new JButton("1");
-        JButton xTwo = new JButton("2");
-        JButton xThree = new JButton("3");
-        JButton xFour = new JButton("4");
-        JButton xFive = new JButton("5");
-        JButton xSix = new JButton("6");
-        JButton xSev = new JButton("7");
-        JButton xEight = new JButton("8");
-        JButton xNine = new JButton("9");
-        JButton xTen = new JButton("10");
-        JButton xElev = new JButton("11");
-        JButton xTwelv = new JButton("12");
-        JButton xThirt = new JButton("13");
-        JButton xFourt = new JButton("14");
-        JButton xFift = new JButton("15");
         JButton checkDev = new JButton("Check Devices");
-        JLabel devStatus = new JLabel("No device connected!");
+        checkDev.addActionListener(e -> {
+            afmcc.checkDevs();
+            updateDevStatus();
+        });
+        devStatus = new JLabel();
+        updateDevStatus();
+
+        JButton xZero = new JButton("0");
+        xZero.addActionListener(e -> {
+            afmcc.currEEID = 0;
+            updateDevStatus();
+        });
+
+        JButton xOne = new JButton("1");
+        xOne.addActionListener(e -> {
+            afmcc.currEEID = 1;
+            updateDevStatus();
+        });
+        JButton xTwo = new JButton("2");
+        xTwo.addActionListener(e -> {
+            afmcc.currEEID = 2;
+            updateDevStatus();
+        });
+        JButton xThree = new JButton("3");
+        xThree.addActionListener(e -> {
+            afmcc.currEEID = 3;
+            updateDevStatus();
+        });
+        JButton xFour = new JButton("4");
+        xFour.addActionListener(e -> {
+            afmcc.currEEID = 4;
+            updateDevStatus();
+        });
+        JButton xFive = new JButton("5");
+        xFive.addActionListener(e -> {
+            afmcc.currEEID = 5;
+            updateDevStatus();
+        });
+        JButton xSix = new JButton("6");
+        xSix.addActionListener(e -> {
+            afmcc.currEEID = 6;
+            updateDevStatus();
+        });
+        JButton xSev = new JButton("7");
+        xSev.addActionListener(e -> {
+            afmcc.currEEID = 7;
+            updateDevStatus();
+        });
+        JButton xEight = new JButton("8");
+        xEight.addActionListener(e -> {
+            afmcc.currEEID = 8;
+            updateDevStatus();
+        });
+        JButton xNine = new JButton("9");
+        xNine.addActionListener(e -> {
+            afmcc.currEEID = 9;
+            updateDevStatus();
+        });
+        JButton xTen = new JButton("10");
+        xTen.addActionListener(e -> {
+            afmcc.currEEID = 10;
+            updateDevStatus();
+        });
+        JButton xElev = new JButton("11");
+        xElev.addActionListener(e -> {
+            afmcc.currEEID = 11;
+            updateDevStatus();
+        });
+        JButton xTwelv = new JButton("12");
+        xTwelv.addActionListener(e -> {
+            afmcc.currEEID = 12;
+            updateDevStatus();
+        });
+        JButton xThirt = new JButton("13");
+        xThirt.addActionListener(e -> {
+            afmcc.currEEID = 13;
+            updateDevStatus();
+        });
+        JButton xFourt = new JButton("14");
+        xFourt.addActionListener(e -> {
+            afmcc.currEEID = 14;
+            updateDevStatus();
+        });
+        JButton xFift = new JButton("15");
+        xFift.addActionListener(e -> {
+            afmcc.currEEID = 15;
+            updateDevStatus();
+        });
 
 
 
@@ -591,5 +662,10 @@ public class Gui extends JFrame {
         catch(NumberFormatException exc) {
             System.out.printf("[GUI] %s invalid args!\n", axis==1?"x":(axis==2?"y":"z"));
         }
+    }
+
+    private void updateDevStatus() {
+        if(afmcc.currEEID == -1) devStatus.setText("No device connected.");
+        else devStatus.setText("Device "+afmcc.currEEID+" selected.");
     }
 }
