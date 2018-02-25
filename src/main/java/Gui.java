@@ -15,6 +15,7 @@ public class Gui extends JFrame {
     private JLabel xLabel, yLabel, zLabel, devStatus;
     private JTextField xSteps, ySteps, zSteps;
     private JTextField xVel, yVel, zVel;
+    private JButton[] devArray = new JButton[16];
 
     //todo: make scrollbars react to the gamepad triggered movement (use repaintGUI?)
 
@@ -103,7 +104,7 @@ public class Gui extends JFrame {
         });
         xScrollBar.addAdjustmentListener(e -> {
             if(e.getValueIsAdjusting() || (!e.getValueIsAdjusting() && xScrollBar.getValue()==0) ) {
-                System.out.println("[GUI] X: " + xScrollBar.getValue());
+                //System.out.println("[GUI] X: " + xScrollBar.getValue());
                 xLabel.setText(String.valueOf(xScrollBar.getValue()));
                 if(xScrollBar.getValue()!=0) afmcc.bq.add(new Qobj(xScrollBar.getValue(), 0, 0, false, false, false, false, false, false, false));
                 else afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, false, true));
@@ -204,7 +205,7 @@ public class Gui extends JFrame {
         });
         yScrollBar.addAdjustmentListener(e -> {
             if(e.getValueIsAdjusting() || (!e.getValueIsAdjusting() && yScrollBar.getValue()==0) ) {
-                System.out.println("[GUI] Y: " + yScrollBar.getValue());
+                //System.out.println("[GUI] Y: " + yScrollBar.getValue());
                 yLabel.setText(String.valueOf(yScrollBar.getValue()));
                 if(yScrollBar.getValue()!=0) afmcc.bq.add(new Qobj(0, yScrollBar.getValue(), 0, false, false, false, false, false, false, false));
                 else afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, false, true));
@@ -308,7 +309,8 @@ public class Gui extends JFrame {
         });
         zScrollBar.addAdjustmentListener(e -> {
             if(e.getValueIsAdjusting() || (!e.getValueIsAdjusting() && zScrollBar.getValue()==0) ) {
-                System.out.println("[GUI] Z: " + zScrollBar.getValue());
+                //todo: finest logger for this extremely verbose annoying sout pls
+                //System.out.println("[GUI] Z: " + zScrollBar.getValue());
                 zLabel.setText(String.valueOf(zScrollBar.getValue()));
                 if(zScrollBar.getValue()!=0) afmcc.bq.add(new Qobj(0, 0, zScrollBar.getValue(), false, false, false, false, false, false, false));
                 else afmcc.bq.add(new Qobj(0, 0, 0, false, false, false, false, false, false, true));
@@ -368,94 +370,26 @@ public class Gui extends JFrame {
 
         JButton checkDev = new JButton("Check Devices");
         checkDev.addActionListener(e -> {
-            afmcc.checkDevs();
+            greyCheckDevs();
             updateDevStatus();
         });
+
         devStatus = new JLabel();
+
+
+        for(int i = 0; i < 16; ++i) {
+            devArray[i] = new JButton(""+i);
+
+            // avisam-se as pessoas mais sensíveis que na proxima linha encontra-se um alto meme
+            int effectivelyFinalInt = i;
+            devArray[i].addActionListener(e -> {
+                afmcc.currEEID = effectivelyFinalInt;
+                updateDevStatus();
+            });
+        }
+
+        greyCheckDevs();
         updateDevStatus();
-
-        JButton xZero = new JButton("0");
-        xZero.addActionListener(e -> {
-            afmcc.currEEID = 0;
-            updateDevStatus();
-        });
-
-        JButton xOne = new JButton("1");
-        xOne.addActionListener(e -> {
-            afmcc.currEEID = 1;
-            updateDevStatus();
-        });
-        JButton xTwo = new JButton("2");
-        xTwo.addActionListener(e -> {
-            afmcc.currEEID = 2;
-            updateDevStatus();
-        });
-        JButton xThree = new JButton("3");
-        xThree.addActionListener(e -> {
-            afmcc.currEEID = 3;
-            updateDevStatus();
-        });
-        JButton xFour = new JButton("4");
-        xFour.addActionListener(e -> {
-            afmcc.currEEID = 4;
-            updateDevStatus();
-        });
-        JButton xFive = new JButton("5");
-        xFive.addActionListener(e -> {
-            afmcc.currEEID = 5;
-            updateDevStatus();
-        });
-        JButton xSix = new JButton("6");
-        xSix.addActionListener(e -> {
-            afmcc.currEEID = 6;
-            updateDevStatus();
-        });
-        JButton xSev = new JButton("7");
-        xSev.addActionListener(e -> {
-            afmcc.currEEID = 7;
-            updateDevStatus();
-        });
-        JButton xEight = new JButton("8");
-        xEight.addActionListener(e -> {
-            afmcc.currEEID = 8;
-            updateDevStatus();
-        });
-        JButton xNine = new JButton("9");
-        xNine.addActionListener(e -> {
-            afmcc.currEEID = 9;
-            updateDevStatus();
-        });
-        JButton xTen = new JButton("10");
-        xTen.addActionListener(e -> {
-            afmcc.currEEID = 10;
-            updateDevStatus();
-        });
-        JButton xElev = new JButton("11");
-        xElev.addActionListener(e -> {
-            afmcc.currEEID = 11;
-            updateDevStatus();
-        });
-        JButton xTwelv = new JButton("12");
-        xTwelv.addActionListener(e -> {
-            afmcc.currEEID = 12;
-            updateDevStatus();
-        });
-        JButton xThirt = new JButton("13");
-        xThirt.addActionListener(e -> {
-            afmcc.currEEID = 13;
-            updateDevStatus();
-        });
-        JButton xFourt = new JButton("14");
-        xFourt.addActionListener(e -> {
-            afmcc.currEEID = 14;
-            updateDevStatus();
-        });
-        JButton xFift = new JButton("15");
-        xFift.addActionListener(e -> {
-            afmcc.currEEID = 15;
-            updateDevStatus();
-        });
-
 
 
         GroupLayout gl_contentPane = new GroupLayout(contentPane);
@@ -522,25 +456,25 @@ public class Gui extends JFrame {
 
                         .addGroup(gl_contentPane.createSequentialGroup()
                                 .addGap(87)
-                                .addComponent(xZero, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(xOne, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(xTwo, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(xThree, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(xFour, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(xFive, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(xSix, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(xSev, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
+                                .addComponent(devArray[0], GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(devArray[1], GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(devArray[2], GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(devArray[3], GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(devArray[4], GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(devArray[5], GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(devArray[6], GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(devArray[7], GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
 
                         .addGroup(gl_contentPane.createSequentialGroup()
                                 .addGap(87)
-                                .addComponent(xEight, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(xNine, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(xTen, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(xElev, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(xTwelv, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(xThirt, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(xFourt, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
-                                .addComponent(xFift, GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
+                                .addComponent(devArray[8], GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(devArray[9], GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(devArray[10], GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(devArray[11], GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(devArray[12], GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(devArray[13], GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(devArray[14], GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(devArray[15], GroupLayout.PREFERRED_SIZE, 50, GroupLayout.PREFERRED_SIZE))
 
                         .addGroup(gl_contentPane.createSequentialGroup()
                                 .addGap(228)
@@ -608,23 +542,23 @@ public class Gui extends JFrame {
                                 .addGap(20)
                                 .addGroup(gl_contentPane.createSequentialGroup()
                                         .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-                                                .addComponent(xZero)
-                                                .addComponent(xOne)
-                                                .addComponent(xTwo)
-                                                .addComponent(xThree)
-                                                .addComponent(xFour)
-                                                .addComponent(xFive)
-                                                .addComponent(xSix)
-                                                .addComponent(xSev))
+                                                .addComponent(devArray[0])
+                                                .addComponent(devArray[1])
+                                                .addComponent(devArray[2])
+                                                .addComponent(devArray[3])
+                                                .addComponent(devArray[4])
+                                                .addComponent(devArray[5])
+                                                .addComponent(devArray[6])
+                                                .addComponent(devArray[7]))
                                         .addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-                                                .addComponent(xEight)
-                                                .addComponent(xNine)
-                                                .addComponent(xTen)
-                                                .addComponent(xElev)
-                                                .addComponent(xTwelv)
-                                                .addComponent(xThirt)
-                                                .addComponent(xFourt)
-                                                .addComponent(xFift)))
+                                                .addComponent(devArray[8])
+                                                .addComponent(devArray[9])
+                                                .addComponent(devArray[10])
+                                                .addComponent(devArray[11])
+                                                .addComponent(devArray[12])
+                                                .addComponent(devArray[13])
+                                                .addComponent(devArray[14])
+                                                .addComponent(devArray[15])))
                                 .addGap(18)
                                 .addComponent(checkDev)
                                 .addGap(50))
@@ -667,5 +601,19 @@ public class Gui extends JFrame {
     private void updateDevStatus() {
         if(afmcc.currEEID == -1) devStatus.setText("No device connected.");
         else devStatus.setText("Device "+afmcc.currEEID+" selected.");
+    }
+
+    private void greyCheckDevs() {
+        afmcc.checkDevs();
+        for(Cu30 dev:afmcc.devices) {
+            if(dev.isConnected()) {
+                devArray[dev.eeid].setEnabled(true);
+            }
+            else {
+                devArray[dev.eeid].setEnabled(false);
+                //todo: and more logger here
+                //System.out.println("[GUI][CheckDevs] Disabled CU30-" + dev.eeid);
+            }
+        }
     }
 }

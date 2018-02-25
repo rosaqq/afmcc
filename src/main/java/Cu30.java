@@ -28,13 +28,16 @@ public class Cu30 {
         devid = c.getValue();
         eeid = d.getValue();
 
+        //todo: start using Logger
+        //System.out.println("[HW][CU30-"+eeid+"] Wrapper opened.");
+
         return ret;
     }
 
     void close() {
         stop();
         lib.CU30WClose(usbinst, usbver, devid, eeid);
-        System.out.println("[HW][CU30-"+eeid+"] Wrapper closed.");
+        //System.out.println("[HW][CU30-"+eeid+"] Wrapper closed.");
     }
 
     void step(int axis, int vel, int steps) {
@@ -50,6 +53,7 @@ public class Cu30 {
     }
 
     boolean isConnected() {
+        close();
         String refStr = open();
         return "".equals(refStr);
     }

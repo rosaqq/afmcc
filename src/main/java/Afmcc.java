@@ -9,7 +9,7 @@ public class Afmcc {
     //if you have any idea why intellij underlines this then please by all means do share it with me
     public volatile int[] stepVel =  new int[3];
     public volatile int[] steps =  new int[3];
-    public Cu30[] devices = new Cu30[16];
+    public volatile Cu30[] devices = new Cu30[16];
 
     public volatile int currEEID = -1;
 
@@ -19,6 +19,19 @@ public class Afmcc {
 
 
     private Afmcc() {
+
+        //initialize java native access interface
+        culib = CU30Wrap.SYNC_INSTANCE;
+        culib.CU30WrapperInit();
+
+        initDevs();
+        checkDevs();
+
+        bq = new LinkedBlockingQueue<>();
+        cstate = new Cstate(controllerIndex, bq);
+
+        Thread cinput = new Thread(cstate, "cinput");
+        cinput.start();
 
         EventQueue.invokeLater(() -> {
             try {
@@ -31,42 +44,35 @@ public class Afmcc {
             }
         });
 
-        bq = new LinkedBlockingQueue<>();
-        cstate = new Cstate(controllerIndex, bq);
-
-        Thread cinput = new Thread(cstate, "cinput");
-        cinput.start();
-
-        //initialize java native access interface
-        culib = CU30Wrap.SYNC_INSTANCE;
-        culib.CU30WrapperInit();
 
         //todo: rework to support multiple hardware interfaces
 
-        initDevs();
-        checkDevs();
+
 
         while(true){
-            try {
-                Qobj qobj = bq.take();
 
-                switch(qobj.trigger) {
-                    case "L1":
-                        devices[currEEID].stop();
-                        break;
-                    case "hat":
-                        dohat(devices[currEEID], qobj);
-                        break;
-                    case "axis":
-                        doax(devices[currEEID], qobj);
-                        break;
+            if(currEEID!=-1) {
+                try {
+                    Qobj qobj = bq.take();
+
+                    switch (qobj.trigger) {
+                        case "L1":
+                            devices[currEEID].stop();
+                            break;
+                        case "hat":
+                            dohat(devices[currEEID], qobj);
+                            break;
+                        case "axis":
+                            doax(devices[currEEID], qobj);
+                            break;
+                    }
+
+                    repaintGui();
+                } catch (InterruptedException e) {
+                    System.out.println("[MAIN] loop interrupted: " + e);
+                    cstate.close();
+                    closeAll();
                 }
-
-                repaintGui();
-            } catch (InterruptedException e) {
-                System.out.println("[MAIN] loop interrupted: " + e);
-                cstate.close();
-                closeAll();
             }
         }
 
@@ -103,18 +109,20 @@ public class Afmcc {
     void closeAll() {
         for(int i = 0;i<16;++i) {
             devices[i].close();
-            System.out.println("[MAIN][CU30-"+i+"] - closed");
+            //System.out.println("[MAIN][CU30-"+i+"] - closed");
         }
     }
 
     public synchronized void checkDevs() {
-        closeAll();
         boolean noConnected = true;
         for(int i = 0;i<16;++i) {
             boolean flag = devices[i].isConnected();
             noConnected = noConnected && !flag;
-            if(flag && currEEID ==-1) currEEID = i;
-            System.out.println("[MAIN][CU30-"+i+"] - " + flag);
+            if(flag) {
+                if(currEEID ==-1) currEEID = i;
+            }
+            //todo: logger here too
+            //System.out.println("[MAIN][CU30-"+i+"] - " + flag);
         }
         if(noConnected) currEEID = -1;
         System.out.println("[MAIN][CU30-"+ currEEID +"] - set to current device.");
