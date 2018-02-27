@@ -385,6 +385,7 @@ public class Gui extends JFrame {
             devArray[i].addActionListener(e -> {
                 afmcc.currEEID = effectivelyFinalInt;
                 updateDevStatus();
+                greyCheckDevs();
             });
         }
 
@@ -603,8 +604,23 @@ public class Gui extends JFrame {
         else devStatus.setText("Device "+afmcc.currEEID+" selected.");
     }
 
+    private void checkDevs() {
+        boolean noConnected = true;
+        for(int i = 0;i<16;++i) {
+            boolean flag = afmcc.devices[i].isConnected();
+            noConnected = noConnected && !flag;
+            if(flag) {
+                if(afmcc.currEEID ==-1) afmcc.currEEID = i;
+            }
+            //todo: logger here too
+            //System.out.println("[MAIN][CU30-"+i+"] - " + flag);
+        }
+        if(noConnected) afmcc.currEEID = -1;
+        System.out.println("[MAIN][CU30-"+ afmcc.currEEID +"] - set to current device.");
+    }
+
     private void greyCheckDevs() {
-        afmcc.checkDevs();
+        checkDevs();
         for(Cu30 dev:afmcc.devices) {
             if(dev.isConnected()) {
                 devArray[dev.eeid].setEnabled(true);
@@ -617,3 +633,5 @@ public class Gui extends JFrame {
         }
     }
 }
+
+//todo: important - unlag the gui and 2 devs at same time dont work
